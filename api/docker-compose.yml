@@ -1,0 +1,50 @@
+version: "3.1"
+
+services:
+  api:
+    container_name: api
+    image: node:17-alpine
+    restart: always
+    environment:
+      - DB_URL=postgresql://postgres:${DB_PORT}
+      - REDIS_URL=redis://redis:${REDIS_PORT}
+    env_file: 
+      - .env
+    depends_on:
+      - postgres
+    ports:
+      - ${PORT}:${PORT}
+    volumes:
+      - .:/usr/src/api
+      - /usr/src/api/node_modules/
+    working_dir: /usr/src/api
+    command: sh -c "npm install && npm run start:dev"
+
+
+  postgres:
+    container_name: postgres
+    image: postgres:14.2-alpine
+    restart: always
+    env_file:
+     - .env
+    environment:
+      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_USER=${DB_USERNAME}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+    ports: 
+      - ${DB_PORT}:${DB_PORT}
+    volumes:
+      - ./db-data/:/var/lib/postgresql/data/
+
+
+  redis:
+    command: redis-server
+    container_name: redis
+    env_file:
+      - .env  
+    image: redis:7.0-rc2-alpine
+    ports:
+      - ${REDIS_PORT}:${REDIS_PORT}
+    restart: always
+    volumes:
+      - /docker/host/dir:/data
