@@ -1,5 +1,5 @@
 import { createConnection } from "typeorm";
-import User from "../models/user.model";
+import User from "../features/users/models/user.model";
 
 export default async function connect() {
   const connection = await createConnection({

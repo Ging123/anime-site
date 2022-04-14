@@ -1,6 +1,6 @@
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { ConfigModule } from "@nestjs/config";
-import User from "../models/user.model";
+import User from "../features/users/models/user.model";
 
 const production = process.env.STATUS === "PRO";
 
