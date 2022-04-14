@@ -17,10 +17,9 @@ class Jwt implements Token {
 
 
   public createToken(payload:object|string, secret:string, expiresIn?:string) {
-    return this.jwt.sign(payload, {
-      secret:secret,
-      expiresIn:expiresIn
-    });
+    const tokenOption:any = { secret:secret };
+    if(expiresIn) tokenOption.expiresIn = expiresIn;
+    return this.jwt.sign(payload, tokenOption);
   }
 }
 

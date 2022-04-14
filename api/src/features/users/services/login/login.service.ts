@@ -1,10 +1,11 @@
-import SaveUserTokenQueue from "../../../jobs/save_token/queue";
-import { HttpException, Injectable } from "@nestjs/common";
+import { HttpException, Inject, Injectable } from "@nestjs/common";
+import SaveUserTokenQueue from "../../jobs/save_token/queue";
 import UserRepo from "../base";
 
 @Injectable()
 class LoginService extends UserRepo {
 
+  @Inject(SaveUserTokenQueue)
   private readonly saveTokenQueue: SaveUserTokenQueue;
 
   public async login(emailOrUsername:string, password:string) {
@@ -23,9 +24,9 @@ class LoginService extends UserRepo {
     return user;
   }
 
-  private async verifyIfUserAccountIsConfirmed(confirmed:boolean) {
+  private verifyIfUserAccountIsConfirmed(confirmed:boolean) {
     const userAccountIsNotConfirmed = "This account wasn't confirmed";
-    if(!confirmed) throw new HttpException(userAccountIsNotConfirmed, 400);
+    if(!confirmed) throw new HttpException(userAccountIsNotConfirmed, 401);
   }
 
   private async verifyIfPasswordMatch(password:string, hashedPassword:string) {
@@ -40,7 +41,7 @@ class LoginService extends UserRepo {
     const refreshTokenSecret = process.env.REFRESH_TOKEN_SECRET;
     const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET;
     return {
-      access_token: this.jwt.createToken(payload, accessTokenSecret, "60m"),
+      access_token: this.jwt.createToken(payload, accessTokenSecret, "1h"),
       refresh_token: this.jwt.createToken(payload, refreshTokenSecret)
     }
   }

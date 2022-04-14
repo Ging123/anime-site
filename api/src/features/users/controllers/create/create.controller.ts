@@ -5,7 +5,7 @@ import {
   Body,
   HttpCode,
 } from "@nestjs/common";
-import CreateUserService from "../../services/users/create/create.service";
+import CreateUserService from "../../services/create/create.service";
 import CreateUserDto from "./create.dto";
 
 @Controller()

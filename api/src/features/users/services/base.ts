@@ -1,6 +1,6 @@
-import UserRepo from "../../repositories/user.repo";
-import Bcrypt from "../../../../libs/hash/bcrypt";
-import Jwt from "../../../../libs/token/jwt";
+import UserRepo from "../repositories/user.repo";
+import Bcrypt from "../../../libs/hash/bcrypt";
+import Jwt from "../../../libs/token/jwt";
 import { Inject } from "@nestjs/common";
 
 class Base {

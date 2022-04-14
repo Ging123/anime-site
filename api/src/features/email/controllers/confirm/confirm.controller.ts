@@ -1,4 +1,4 @@
-import ConfirmUserEmailService from "../../../users/services/users/confirm_email/confirm.email.service";
+import ConfirmUserEmailService from "../../../users/services/confirm_email/confirm.email.service";
 import { Controller, Get, HttpCode, Query, UseGuards } from "@nestjs/common";
 import CodeIsValidGuard from "../../guards/code.is.valid.guard";
 

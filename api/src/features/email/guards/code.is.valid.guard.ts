@@ -5,7 +5,7 @@ import {
   HttpException 
 } from '@nestjs/common';
 
-import GetUserService from "../../users/services/users/get/get.service";
+import GetUserService from "../../users/services/get/get.service";
 import Jwt from "../../../libs/token/jwt";
 
 @Injectable()

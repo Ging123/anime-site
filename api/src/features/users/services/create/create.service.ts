@@ -1,4 +1,4 @@
-import SendConfirmationCodeQueue from "../../../../email/jobs/send_confirmation_code/queue";
+import SendConfirmationCodeQueue from "../../../email/jobs/send_confirmation_code/queue";
 import { HttpException, Inject, Injectable } from "@nestjs/common";
 import UserRepo from "../base";
 
@@ -34,7 +34,7 @@ class CreateUserService extends UserRepo {
   }
 
   private async hashPassword(password: string) {
-    const salt = process.env.PASSWORLD_SALT!;
+    const salt = process.env.PASSWORD_SALT;
     const hash = await this.bcrypt.hash(password, salt);
     return hash;
   }
@@ -42,7 +42,7 @@ class CreateUserService extends UserRepo {
   private async sendConfirmationCode(email:string) {
     const payload = { email:email };
     const secret = process.env.EMAIL_SECRET;
-    const code = this.jwt.createToken(payload, secret, "60m");
+    const code = this.jwt.createToken(payload, secret, "1h");
     if(process.env.STATUS === "DEV") return code;
     await this.sendConfirmationCodeQueue.sendConfirmationCode(email, code);
   }
