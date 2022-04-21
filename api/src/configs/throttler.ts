@@ -1,5 +1,5 @@
-import { APP_GUARD } from "@nestjs/core";
 import { ThrottlerGuard, ThrottlerModule } from "@nestjs/throttler";
+import { APP_GUARD } from "@nestjs/core";
 
 export const throttlerProvider = {
   provide: APP_GUARD,

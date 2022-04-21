@@ -23,6 +23,8 @@ class CreateUserDto {
   @MaxLength(30, { message: "Password must be shorter than 30 characteres" })
   @MinLength(7, { message: "Password must be greater than 6 characteres" })
   password: string;
+
+  adminKey:string;
 }
 
 export default CreateUserDto;

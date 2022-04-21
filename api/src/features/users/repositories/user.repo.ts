@@ -1,6 +1,7 @@
 import { UserRepository } from "./user.repo.interface";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Injectable } from "@nestjs/common";
+import { role } from "../interfaces/user";
 import User from "../models/user.model";
 import { Repository } from "typeorm";
 
@@ -12,13 +13,13 @@ class UserRepo implements UserRepository {
 
   public async findByEmail(email: string) {
     return await this.user.findOne({
-      where: { email: email },
+      where: { email: email }
     });
   }
 
   public async findByUsername(username: string) {
     return await this.user.findOne({
-      where: { username: username },
+      where: { username: username }
     });
   }
   
@@ -32,13 +33,13 @@ class UserRepo implements UserRepository {
     return await this.user.delete({ email: email });
   }
 
-  public async createUser(email: string, username: string, password: string) {
+  public async createUser(email:string, username:string, password:string, role:role) {
     return await this.user.insert({
       email: email,
       username: username,
       password: password,
-      role: "user",
-      confirmed: false
+      role: role,
+      confirmed: role === "admin"
     });
   }
 

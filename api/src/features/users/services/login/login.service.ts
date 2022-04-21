@@ -1,5 +1,6 @@
 import { HttpException, Inject, Injectable } from "@nestjs/common";
 import SaveUserTokenQueue from "../../jobs/save_token/queue";
+import { role } from "../../interfaces/user";
 import UserRepo from "../base";
 
 @Injectable()
@@ -12,8 +13,10 @@ class LoginService extends UserRepo {
     const user = await this.getUser(emailOrUsername);
     this.verifyIfUserAccountIsConfirmed(user.confirmed);
     await this.verifyIfPasswordMatch(password, user.password);
-    const token = this.createTokens(user.id);
-    this.saveUserToken(user.id, token.refresh_token);
+    const token = this.createTokens(user.id, user.role);
+    
+    if(process.env.STATUS === "DEV") await this.saveUserToken(user.id, token.refresh_token);
+    else this.saveUserToken(user.id, token.refresh_token);
     return token;
   }
 
@@ -36,8 +39,8 @@ class LoginService extends UserRepo {
     if(!match) throw new HttpException(wrongPassword, 400);
   }
 
-  private createTokens(userId:string) {
-    const payload = { id:userId };
+  private createTokens(userId:string, userRole:role) {
+    const payload = { id:userId, role:userRole };
     const refreshTokenSecret = process.env.REFRESH_TOKEN_SECRET;
     const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET;
     return {

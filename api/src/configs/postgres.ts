@@ -1,6 +1,7 @@
+import Anime from "../features/animes/models/anime.model";
+import User from "../features/users/models/user.model";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { ConfigModule } from "@nestjs/config";
-import User from "../features/users/models/user.model";
 
 const production = process.env.STATUS === "PRO";
 
@@ -15,7 +16,7 @@ export default TypeOrmModule.forRoot({
   username: process.env.DB_USERNAME,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
-  entities: [User],
+  entities: [User, Anime],
   synchronize: production ? false : true,
   logging: false,
 });

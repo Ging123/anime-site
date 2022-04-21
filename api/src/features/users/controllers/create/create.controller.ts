@@ -15,8 +15,8 @@ export class CreateController {
   @Post("users")
   @HttpCode(201)
   async create(@Body(new ValidationPipe()) user: CreateUserDto) {
-    const { email, username, password } = user;
-    const confirmationCode = await this.user.create(email, username, password);
+    const { email, username, password, adminKey } = user;
+    const confirmationCode = await this.user.create(email, username, password, adminKey);
     if(confirmationCode) return confirmationCode;
   }
 }

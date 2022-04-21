@@ -1,5 +1,6 @@
-import { createConnection } from "typeorm";
+import Anime from "../features/animes/models/anime.model";
 import User from "../features/users/models/user.model";
+import { createConnection } from "typeorm";
 
 export default async function connect() {
   const connection = await createConnection({
@@ -10,7 +11,7 @@ export default async function connect() {
     username: process.env.DB_USERNAME,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
-    entities: [User],
+    entities: [User, Anime],
     synchronize: true
   });
   return connection

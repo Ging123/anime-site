@@ -8,12 +8,15 @@ class CreateUserService extends UserRepo {
   @Inject(SendConfirmationCodeQueue)
   private readonly sendConfirmationCodeQueue: SendConfirmationCodeQueue;
 
-  public async create(email: string, username: string, password: string) {
+  public async create(email:string, username:string, password:string, adminKey:string) {
     await this.verifyIfEmailOrUsernameExists(email, username);
+    
     password = await this.hashPassword(password);
-    await this.user.createUser(email, username, password);
-    const code = this.sendConfirmationCode(email);
-    return code;
+    const role = this.validateRole(adminKey);
+    await this.user.createUser(email, username, password, role);
+
+    if(role === "admin") return "";
+    return await this.sendConfirmationCode(email);
   }
 
   private async verifyIfEmailOrUsernameExists(email: string, username: string) {
@@ -37,6 +40,11 @@ class CreateUserService extends UserRepo {
     const salt = process.env.PASSWORD_SALT;
     const hash = await this.bcrypt.hash(password, salt);
     return hash;
+  }
+
+  private validateRole(adminKey:string) {
+    if(adminKey === process.env.ADMIN_KEY) return "admin";
+    return "user";
   }
 
   private async sendConfirmationCode(email:string) {
