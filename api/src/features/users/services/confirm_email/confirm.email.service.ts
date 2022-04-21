@@ -8,7 +8,12 @@ class ConfirmUserEmailService extends Base {
   public async confirmEmail(code:string) {
     const secret = process.env.EMAIL_SECRET;
     const email = this.jwt.convert(code, secret).email;
-    if(process.env.STATUS === "DEV") return await this.user.confirmEmail(email);
+    await this.confirm(email);
+  }
+
+  private async confirm(email:string) {
+    const isInDevMode = process.env.STATUS === "DEV";
+    if(isInDevMode) return await this.user.confirmEmail(email);
     this.queue.confirmEmail(email);
   }
 }

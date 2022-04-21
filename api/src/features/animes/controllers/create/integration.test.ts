@@ -1,10 +1,8 @@
 import connect from "../../../../utils/typeorm.connection";
-import Shell from "../../../../libs/commands/shell_js";
 import User from "../../../users/models/user.model";
 import { AppModule } from "../../../../app.module";
 import { INestApplication } from "@nestjs/common";
 import { Connection, Repository } from "typeorm";
-import Anime from "../../models/anime.model";
 import { Test } from "@nestjs/testing";
 import * as request from "supertest";
 
@@ -14,19 +12,16 @@ const userData = {
   password:"asfvavava",
   adminKey:process.env.ADMIN_KEY
 }
-var animeRepo:Repository<Anime>;
 var animeName = "narutoo";
 var token:string;
 var userRepo:Repository<User>;
 var db:Connection;
 var app: any;
 var server: INestApplication;
-const shell = new Shell();
 
 beforeAll(async () => {
   db = await connect()
   userRepo = db.getRepository(User);
-  animeRepo = db.getRepository(Anime);
 
   const moduleRef = await Test.createTestingModule({
     imports: [AppModule],
@@ -48,11 +43,12 @@ beforeAll(async () => {
 });
 
 afterAll(async () => {
+  await request(app)
+    .delete(`/animes/${animeName}`)
+    .set("authorization", token);
   await userRepo.delete({ email:userData.email });
-  await animeRepo.delete({ name:animeName });
   await server.close();
   await db.close();
-  shell.deleteAnimeImage("src/public/anime_images/*");
 });
 
 test("Create an anime", async () => {

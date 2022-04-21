@@ -14,7 +14,7 @@ class CreateAnimeQueue {
       description:description,
       image:image
     }
-    await this.queue.add("create-anime-job", data);
+    await this.queue.add("create-anime-job", data, { attempts:3 });
   }
 }
 

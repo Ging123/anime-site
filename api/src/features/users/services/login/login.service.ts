@@ -14,9 +14,7 @@ class LoginService extends UserRepo {
     this.verifyIfUserAccountIsConfirmed(user.confirmed);
     await this.verifyIfPasswordMatch(password, user.password);
     const token = this.createTokens(user.id, user.role);
-    
-    if(process.env.STATUS === "DEV") await this.saveUserToken(user.id, token.refresh_token);
-    else this.saveUserToken(user.id, token.refresh_token);
+    await this.saveUserToken(user.id, token.refresh_token);
     return token;
   }
 
@@ -50,9 +48,11 @@ class LoginService extends UserRepo {
   }
 
   private async saveUserToken(id:string, token:string) {
+    const isInDevMode = process.env.STATUS === "DEV";
     const salt = process.env.REFRESH_TOKEN_SALT;
     token = await this.bcrypt.hash(token, salt);
-    await this.saveTokenQueue.saveToken(id, token);
+    if(isInDevMode) return await this.user.saveToken(id, token);
+    this.saveTokenQueue.saveToken(id, token);
   }
 }
 
