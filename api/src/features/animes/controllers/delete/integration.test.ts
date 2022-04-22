@@ -1,51 +1,30 @@
-import connect from "../../../../utils/typeorm.connection";
-import User from "../../../users/models/user.model";
-import { AppModule } from "../../../../app.module";
+import createTestApi from "../../../../utils/create.test.api";
 import { INestApplication } from "@nestjs/common";
-import { Connection, Repository } from "typeorm";
-import { Test } from "@nestjs/testing";
 import * as request from "supertest";
 
 const userData = {
   email:"ccascacascbty@gmail.com",
   username:"asfasvsjnfgbdf bdfbd",
   password:"asdsadwqeqwxcsac",
-  adminKey:process.env.ADMIN_KEY
+  adminKey:process.env.ADMIN_KEY,
+  emailOrUsername:"asfasvsjnfgbdf bdfbd"
 }
 var animeName = "hunterhunterrr";
 var token:string;
-var userRepo:Repository<User>;
-var db:Connection;
 var app: any;
 var server: INestApplication;
 
 beforeAll(async () => {
-  db = await connect()
-  userRepo = db.getRepository(User);
-
-  const moduleRef = await Test.createTestingModule({
-    imports: [AppModule],
-  }).compile();
-  server = moduleRef.createNestApplication();
-
-  await server.init();
+  server = await createTestApi()
   app = server.getHttpServer();
-
   await request(app).post("/users").send(userData);
-
-  const res = await request(app)
-    .post("/users/login")
-    .send({ 
-      emailOrUsername:userData.email, 
-      password:userData.password 
-    });
+  const res = await request(app).post("/users/login").send(userData);
   token = res.body.access_token;
 });
 
 afterAll(async () => {
-  await userRepo.delete({ email:userData.email });
+  await request(app).delete("/users").set("authorization", token);
   await server.close();
-  await db.close();
 });
 
 test("Delete an anime", async () => {

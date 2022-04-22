@@ -10,13 +10,13 @@ import {
   ValidationPipe
 } from "@nestjs/common";
 
-import { UserIsAdminGuard } from "../../../users/guards/user.is.admin.guard";
+import { UserHasValidRole } from "../../../users/guards/user.has.valid.role.guard";
 import CreateAnimeService from "../../services/create/create.service";
 import ImageValidator from "../../../../utils/image.validator";
+import { AllowedRole } from "../../../users/decorators/role";
 import { FileInterceptor } from "@nestjs/platform-express";
 import CreateDto from "./create.dto";
 
-@UseGuards(UserIsAdminGuard)
 @Controller()
 export class CreateController {
 
@@ -26,6 +26,8 @@ export class CreateController {
    
   @Post("animes")
   @HttpCode(201)
+  @AllowedRole(["admin"])
+  @UseGuards(UserHasValidRole)
   @UseInterceptors(FileInterceptor("file", {
     dest:"src/public/anime_images",
     fileFilter:(req, file, cb:any) => {

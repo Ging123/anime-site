@@ -14,7 +14,7 @@ class CreateUserService extends UserRepo {
     password = await this.hashPassword(password);
     const role = this.validateRole(adminKey);
     await this.user.createUser(email, username, password, role);
-
+    
     if(role === "admin") return "";
     return await this.sendConfirmationCode(email);
   }

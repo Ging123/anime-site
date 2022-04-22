@@ -1,43 +1,33 @@
-import connect from "../../../../utils/typeorm.connection";
-import { AppModule } from "../../../../app.module";
+import createTestApi from "../../../../utils/create.test.api";
 import { INestApplication } from "@nestjs/common";
-import { Connection, Repository } from "typeorm";
-import User from "../../models/user.model";
-import { Test } from "@nestjs/testing";
 import * as request from "supertest";
 
 const user = {
   email:"kkkk@outlook.com",
   username:"kkkk",
-  password:"123456789"
+  password:"123456789",
+  adminKey:process.env.ADMIN_KEY,
+  emailOrUsername:"kkkk"
 }
-var userRepo:Repository<User>;
-var db:Connection;
 var app: any;
 var server: INestApplication;
+var token:string;
 
 beforeAll(async () => {
-  db = await connect()
-  userRepo = db.getRepository(User);
-
-  const moduleRef = await Test.createTestingModule({
-    imports: [AppModule],
-  }).compile();
-
-  server = moduleRef.createNestApplication();
-  await server.init();
+  server = await createTestApi();
   app = server.getHttpServer();
 });
 
 afterAll(async () => {
-  await userRepo.delete({ email:user.email });
+  await request(app).delete("/users").set("authorization", token);
   await server.close();
-  await db.close();
 });
 
 test("Create an user", async () => {
-  const res = await request(app).post("/users").send(user);
+  let res = await request(app).post("/users").send(user);
   expect(res.status).toBe(201);
+  res = await request(app).post("/users/login").send(user);
+  token = res.body.access_token;
 });
 
 describe("Test empty data errors", () => {

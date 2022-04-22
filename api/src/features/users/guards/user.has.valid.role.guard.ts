@@ -1,23 +1,29 @@
 import { Injectable, CanActivate, ExecutionContext, Inject, HttpException } from '@nestjs/common';
 import Jwt from "../../../libs/token/jwt";
+import { role } from '../interfaces/user';
+import { Reflector } from '@nestjs/core';
 
 interface user {
   id:string;
-  role:"admin"|"user";
+  role:role;
 }
 
 @Injectable()
-export class UserIsAdminGuard implements CanActivate {
+export class UserHasValidRole implements CanActivate {
   constructor(
     @Inject(Jwt)
-    private readonly token:Jwt
+    private readonly token:Jwt,
+    private readonly reflector: Reflector
   ) {}
 
   canActivate(context: ExecutionContext) {
+    const validRole = this.reflector.get<role[]>("role", context.getHandler());
     const request = context.switchToHttp().getRequest();
+
     const accessToken = request.headers.authorization;
     const user = this.convertToken(accessToken);
-    this.validateUserRole(user.role);
+    this.validateUserRole(user.role, validRole);
+
     return true;
   }
 
@@ -35,8 +41,11 @@ export class UserIsAdminGuard implements CanActivate {
     }
   }
 
-  private validateUserRole(role:"admin"|"user") {
-    const youAreNotAnAdmin = "You must be admin to access this rote";
-    if(role !== "admin") throw new HttpException(youAreNotAnAdmin, 403); 
+  private validateUserRole(userRole:string, validRoles:role[]) {
+    const dontHavePermission = "You don't have permission to access this rote";
+    for(const validRole of validRoles) {
+      if(userRole === validRole) return;
+    }
+    throw new HttpException(dontHavePermission, 403);
   }
 }

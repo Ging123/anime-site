@@ -1,42 +1,28 @@
-import connect from "../../../../utils/typeorm.connection";
-import { AppModule } from "../../../../app.module";
+import createTestApi from "../../../../utils/create.test.api";
 import { INestApplication } from "@nestjs/common";
-import { Connection, Repository } from "typeorm";
-import User from "../../models/user.model";
-import { Test } from "@nestjs/testing";
 import * as request from "supertest";
 
 const userData = {
   email:"testasofksao@gmail.com",
   username:"kkfaksfvsdv",
-  password:"aokfosakfosaf"
+  password:"aokfosakfosaf",
+  emailOrUsername:"kkfaksfvsdv"
 }
-var userRepo:Repository<User>;
-var db:Connection;
 var code:string;
 var app: any;
 var server: INestApplication;
+var token:string;
 
 beforeAll(async () => {
-  db = await connect()
-  userRepo = db.getRepository(User);
-
-  const moduleRef = await Test.createTestingModule({
-    imports: [AppModule],
-  }).compile();
-  server = moduleRef.createNestApplication();
-
-  await server.init();
+  server = await createTestApi();
   app = server.getHttpServer();
-
   const res = await request(app).post("/users").send(userData);
   code = res.text;
 });
 
 afterAll(async () => {
-  await userRepo.delete({ email:userData.email });
+  await request(app).delete("/users").set("authorization", token);
   await server.close();
-  await db.close();
 });
 
 test("Login with an account that wasn't confirmed", async () => {
@@ -62,6 +48,8 @@ test("Login an user", async () => {
   expect(res.status).toBe(201);
   expect(res.body.refresh_token).toBeTruthy();
   expect(res.body.access_token).toBeTruthy();
+
+  token = res.body.access_token;
 });
 
 describe("Test empty data error", () => {

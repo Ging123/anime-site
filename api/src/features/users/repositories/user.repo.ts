@@ -33,6 +33,10 @@ class UserRepo implements UserRepository {
     return await this.user.delete({ email: email });
   }
 
+  public async deleteById(id:string) {
+    return await this.user.delete({ id:id });
+  }
+
   public async createUser(email:string, username:string, password:string, role:role) {
     return await this.user.insert({
       email: email,

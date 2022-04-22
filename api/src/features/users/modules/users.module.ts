@@ -1,6 +1,6 @@
 import ConfirmUserEmailService from "../services/confirm_email/confirm.email.service";
 import { EmailModule } from "../../../features/email/modules/email.module";
-import { UserIsAdminGuard } from "../guards/user.is.admin.guard";
+import { UserHasValidRole } from "../guards/user.has.valid.role.guard";
 import GetUserService from "../services/get/get.service";
 import { forwardRef, Module } from "@nestjs/common";
 import customProviders from "./custom.providers";
@@ -23,14 +23,14 @@ import servicies from "./servicies";
     ...servicies,
     ...jobs,
     ...customProviders,
-    UserIsAdminGuard
+    UserHasValidRole
   ],
   exports:[
     ...jobs, 
     queues, 
     GetUserService,
     ConfirmUserEmailService,
-    UserIsAdminGuard,
+    UserHasValidRole,
     ...customProviders
   ]
 })
