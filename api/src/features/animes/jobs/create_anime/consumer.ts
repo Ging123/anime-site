@@ -19,8 +19,8 @@ class CreateAnimeConsumer {
 
   @Process("create-anime-job")
   async create(job: Job<anime>) {
-    const { name, description, image } = job.data;
-    await this.anime.create(name, description, image);
+    const { name, description, image, tags } = job.data;
+    await this.anime.insert(name, description, image, tags);
   }
 }
 

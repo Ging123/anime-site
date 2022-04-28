@@ -33,7 +33,7 @@ class User {
   username: string;
 
   @Column({
-    length: 100,
+    length: 75,
     nullable: false,
     type: "varchar",
   })
@@ -47,8 +47,8 @@ class User {
   role: role;
 
   @Column({
-    length: 100,
-    nullable:true,
+    length: 75,
+    nullable: true,
     type: "varchar"
   })
   token: string;

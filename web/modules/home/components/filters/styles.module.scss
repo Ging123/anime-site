@@ -1,0 +1,24 @@
+@import "../../../../styles/screen.size.scss";
+@import "../../../../styles/container.scss";
+@import "../../../../styles/effect.scss";
+
+.container {
+  @include flex(row, center, space-between);
+}
+
+.icone {
+  @extend %darker-on-click-or-hover;
+  font-size:16px;
+}
+
+@media(min-width:$smallest-devices-width) {
+  .icone {
+    font-size:18px;
+  }
+}
+
+@media(min-width:$small-devices-width) {
+  .icone {
+    font-size:20px;
+  }
+}

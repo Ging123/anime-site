@@ -1,0 +1,18 @@
+@import "./screen.size.scss";
+
+%title {
+  font-size:20px;
+  margin:0px;
+}
+
+@media (min-width:$smallest-devices-width) {
+  %title {
+    font-size:30px;
+  }
+}
+
+@media (min-width:$small-devices-width) {
+  %title {
+    font-size:40px;
+  }
+}

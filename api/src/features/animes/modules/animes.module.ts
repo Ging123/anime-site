@@ -1,7 +1,9 @@
 import { UsersModule } from "../../users/modules/users.module";
 import { CacheModule } from "../../cache/module/cache.module";
+import { TagsModule } from "../../tags/modules/tags.module";
 import customProviders from "./custom.providers";
 import { TypeOrmModule } from "@nestjs/typeorm";
+import Tag from "../../tags/models/tag.model";
 import Anime from "../models/anime.model";
 import { Module } from "@nestjs/common";
 import controllers from "./controllers";
@@ -10,11 +12,11 @@ import services from "./services";
 
 @Module({
   imports:[
-    TypeOrmModule.forFeature([Anime]), 
-    CacheModule, 
+    TypeOrmModule.forFeature([Anime, Tag]), 
     CacheModule, 
     queues,
-    UsersModule
+    UsersModule,
+    TagsModule
   ],
   controllers:controllers,
   providers: [ 

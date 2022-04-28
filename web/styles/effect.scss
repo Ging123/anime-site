@@ -1,0 +1,11 @@
+%darker-on-click-or-hover {
+  cursor:pointer;
+
+  &:hover {
+    filter:brightness(90%);
+  }
+
+  &:active {
+    filter:brightness(80%);
+  }
+}

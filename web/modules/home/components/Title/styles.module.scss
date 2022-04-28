@@ -1,0 +1,5 @@
+@import "../../../../styles/text.scss";
+
+.title {
+  @extend %title;
+}

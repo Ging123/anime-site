@@ -3,6 +3,7 @@ import { EmailModule } from "./features/email/modules/email.module";
 import { UsersModule } from "./features/users/modules/users.module";
 import { CacheModule } from "./features/cache/module/cache.module";
 import throttler, { throttlerProvider } from "./configs/throttler";
+import { TagsModule } from "./features/tags/modules/tags.module";
 import cacheManager from "./configs/cache.manager";
 import postgres from "./configs/postgres";
 import { Module } from "@nestjs/common";
@@ -19,7 +20,8 @@ import env from "./configs/env";
     EmailModule, 
     AnimesModule,
     cacheManager,
-    CacheModule
+    CacheModule,
+    TagsModule
   ],
   providers: [throttlerProvider],
   controllers: [],

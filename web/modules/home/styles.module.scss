@@ -1,0 +1,13 @@
+@import "../../styles/screen.size.scss";
+
+.main {
+  padding:10px;
+  width:100%;
+}
+
+@media(min-width:$small-devices-width) {
+
+  .main {
+    padding:30px;
+  }
+}

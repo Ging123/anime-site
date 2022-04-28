@@ -1,5 +1,6 @@
 import AnimeRepository from "./anime.repo.interface";
 import { InjectRepository } from "@nestjs/typeorm";
+import Tag from "../../tags/models/tag.model";
 import Anime from "../models/anime.model";
 import { Repository } from "typeorm";
 
@@ -10,12 +11,13 @@ class AnimeRepo implements AnimeRepository {
   @InjectRepository(Anime)
   private readonly anime:Repository<Anime>;
   
-  public async create(name:string, description = "", image:string) {
-    return await this.anime.insert({
-      name:name,
-      description:description,
-      image:image
-    });
+  public async insert(name:string, description="", image:string, tags:Tag[]) {
+    const newAnime = this.anime.create();
+    newAnime.name = name;
+    newAnime.image = image;
+    newAnime.description = description;
+    newAnime.tags = tags;
+    return await this.anime.save(newAnime);
   }
 
   public async findByName(name:string, select:anime[]) {

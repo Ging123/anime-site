@@ -1,0 +1,36 @@
+@import "../../styles/screen.size.scss";
+@import "../../styles/container.scss";
+@import "../../styles/effect.scss";
+@import "../../styles/color.scss";
+@import "../../styles/text.scss";
+
+.header {
+  @include flex(row, center, space-between);
+  padding:10px;
+  width:100%;
+}
+
+.title {
+  @extend %darker-on-click-or-hover;
+  @extend %title;
+  color:$main-green;
+}
+
+.nav {
+  @include flex(row, center, center);
+  @extend %darker-on-click-or-hover;
+}
+
+.icone {
+  font-size:18px;
+}
+
+@media (min-width:$small-devices-width) {
+  .header {
+    padding:15px 30px;
+  } 
+
+  .icone {
+    font-size:24px;
+  }
+}

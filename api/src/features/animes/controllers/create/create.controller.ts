@@ -45,6 +45,6 @@ export class CreateController {
     @Body(new ValidationPipe()) anime:CreateDto,
     @UploadedFile() image: Express.Multer.File
   ) {
-    await this.anime.create(anime.name, anime.description, image);
+    await this.anime.create(anime.name, anime.description, image, anime.tags);
   }
 }

@@ -1,0 +1,13 @@
+@import "./color.scss";
+
+* {
+  box-sizing:border-box;
+}
+
+body {
+  background:$main-black;
+  color:white;
+  font-family:arial;
+  margin:0px;
+  padding:0px;
+}

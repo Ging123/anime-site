@@ -1,0 +1,18 @@
+@import "../../../../styles/container.scss";
+@import "../../../../styles/effect.scss";
+@import "../../../../styles/color.scss";
+
+.form {
+  @extend %darker-on-click-or-hover;
+  @extend %flex-row;
+  margin:40px 0px;
+  width:100%;
+}
+
+.input {
+  width:100%;
+}
+
+.button {
+  width:100px;
+}

@@ -3,9 +3,13 @@ import {
   CreateDateColumn,
   Entity,
   Index,
+  JoinTable,
+  ManyToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
+
+import Tag from "../../tags/models/tag.model";
 
 @Entity()
 class Anime {
@@ -34,6 +38,10 @@ class Anime {
     type: "varchar",
   })
   image: string;
+
+  @ManyToMany(() => Tag, { cascade:true })
+  @JoinTable({ name:"animes_tags" })
+  tags:Tag[];
 
   @CreateDateColumn()
   created_at: Date;
