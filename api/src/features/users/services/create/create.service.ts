@@ -16,7 +16,7 @@ class CreateUserService extends UserRepo {
     await this.user.createUser(email, username, password, role);
     
     if(role === "admin") return "";
-    return await this.sendConfirmationCode(email);
+    return this.sendConfirmationCode(email);
   }
 
   private async verifyIfEmailOrUsernameExists(email: string, username: string) {
@@ -47,12 +47,12 @@ class CreateUserService extends UserRepo {
     return "user";
   }
 
-  private async sendConfirmationCode(email:string) {
+  private sendConfirmationCode(email:string) {
     const payload = { email:email };
     const secret = process.env.EMAIL_SECRET;
     const code = this.jwt.createToken(payload, secret, "1h");
     if(process.env.STATUS === "DEV") return code;
-    await this.sendConfirmationCodeQueue.sendConfirmationCode(email, code);
+    this.sendConfirmationCodeQueue.sendConfirmationCode(email, code);
   }
 }
 

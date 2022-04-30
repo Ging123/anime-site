@@ -48,7 +48,7 @@ class UserRepo implements UserRepository {
   }
 
   public async confirmEmail(email:string) {
-    await this.user.update({email:email}, {confirmed:true})
+    await this.user.update({email:email}, { confirmed:true });
   }
 
   public async saveToken(id:string, token:string) {

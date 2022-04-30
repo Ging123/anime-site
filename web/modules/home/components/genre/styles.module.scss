@@ -1,0 +1,14 @@
+@import "../../../../styles/effect.scss";
+@import "../../../../styles/text.scss";
+
+.container {
+  @extend %noselect;
+  margin:30px 0px;
+  width:100%;
+}
+
+.genre {
+  @extend %darker-on-click-or-hover;
+  background:#2a2c31;
+  padding:10px 15px;
+}

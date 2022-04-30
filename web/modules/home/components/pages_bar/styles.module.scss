@@ -1,0 +1,36 @@
+@import "../../../../styles/screen.size.scss";
+@import "../../../../styles/container.scss";
+@import "../../../../styles/effect.scss";
+@import "../../../../styles/color.scss";
+@import "../../../../styles/text.scss";
+
+.container {
+  @include flex(row, center, center);
+  margin:50px 0px;
+  width:100%;
+}
+
+.page {
+  @extend %darker-on-click-or-hover;
+  @extend %noselect;
+  border:1px solid $main-green;
+  font-size:14px;
+  padding:5px;
+}
+
+.selected {
+  background:$main-green;
+}
+
+@media(min-width:$smallest-devices-width) {
+  .page {
+    font-size:16px;
+  }
+}
+
+@media (min-width:$small-devices-width) {
+  .page {
+    font-size:18px;
+    padding:10px;
+  }
+}

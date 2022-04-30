@@ -1,3 +1,5 @@
+@import "./color.scss";
+
 %darker-on-click-or-hover {
   cursor:pointer;
 
@@ -7,5 +9,13 @@
 
   &:active {
     filter:brightness(80%);
+  }
+}
+
+%green-shadow-on-hover {
+  cursor:pointer;
+
+  &:hover {
+    box-shadow:0 0 10px $main-green, 0 0 40px $main-green, 0 0 80px $main-green;
   }
 }

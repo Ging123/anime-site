@@ -9,6 +9,7 @@ const userData = {
   adminKey:process.env.ADMIN_KEY,
   emailOrUsername:"safgawqewq"
 }
+const tagName = "action";
 var animeName = "narutoo";
 var token:string;
 var app: any;
@@ -20,11 +21,17 @@ beforeAll(async () => {
   await request(app).post("/users").send(userData);
   const res = await request(app).post("/users/login").send(userData);
   token = res.body.access_token;
+
+  await request(app)
+    .post("/tags")
+    .send({ name:tagName })
+    .set("authorization", token);
 });
 
 afterAll(async () => {
   await request(app).delete(`/animes/${animeName}`).set("authorization", token);
   await request(app).delete("/users").set("authorization", token);
+  await request(app).delete(`/tags/${tagName}`).set("authorization", token);
   await server.close();
 });
 
@@ -34,6 +41,7 @@ test("Create an anime", async () => {
     .set("authorization", token)
     .field("name", animeName)
     .field("description", "")
+    .field("tags[0]", tagName)
     .attach("file", "src/assets_for_tests/1_BytAjqXDOjUZl7MEs1WHUw.png")
   expect(res.status).toBe(201);
 });
@@ -45,6 +53,7 @@ test("Test error of send a name that already exists", async () => {
     .set("authorization", token)
     .field("name", animeName)
     .field("description", "")
+    .field("tags[0]", tagName)
     .attach("file", "src/assets_for_tests/1_BytAjqXDOjUZl7MEs1WHUw.png")
   expect(res.status).toBe(400);
   expect(res.body.message).toContain(nameAlreadyExist);
@@ -60,6 +69,30 @@ test("Test don't send name", async () => {
   expect(res.body.message).toContain(nameIsEmpty);
 });
 
+describe("Test tag errors", () => {
+  
+  test("Test don't send tags", async () => {
+    const tagsIsEmpty = "Tags is empty";
+    const res = await request(app)
+      .post("/animes")
+      .set("authorization", token)
+      .send({ name:"a", description:""});
+    expect(res.status).toBe(400);
+    expect(res.body.message).toContain(tagsIsEmpty)
+  });
+
+  test("Test send more tags than allowed", async () => {
+    const tags = ["a", "b", "c", "d", "e", "f", "s"];
+    const quantityOfTagsGreaterThanAllowed = "An anime can just have 5 tags";
+    const res = await request(app)
+      .post("/animes")
+      .set("authorization", token)
+      .send({ name:"a", description:"", tags:tags});
+    expect(res.status).toBe(400);
+    expect(res.body.message).toContain(quantityOfTagsGreaterThanAllowed)
+  });
+});
+
 describe("Test image errors", () => {
 
   test("Don't send image", async () => {
@@ -67,7 +100,7 @@ describe("Test image errors", () => {
     const res = await request(app)
       .post("/animes")
       .set("authorization", token)
-      .send({ name:"narutoo", description:"a ninja anime"})
+      .send({ name:"narutoo", description:"a ninja anime", tags:[ tagName ]})
     expect(res.status).toBe(400);
     expect(res.body.message).toContain(imageWasntSent);
   });
@@ -80,6 +113,7 @@ describe("Test image errors", () => {
       .field("name", "kkkkk")
       .field("description", "asokdasodkaso")
       .attach("file", "src/assets_for_tests/test.txt")
+      .field("tags[0]", tagName)
     expect(res.status).toBe(400);
     expect(res.body.message).toContain(invalidImage);
   });

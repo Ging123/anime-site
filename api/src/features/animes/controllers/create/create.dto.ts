@@ -13,6 +13,7 @@ class CreateDto {
   @MaxLength(100, { message:"Name must be shorter than 100 characteres" })
   name:string;
 
+  @IsNotEmpty({ message:"Tags is empty" })
   @IsArray({ message:"Tags must be an array" })
   @ArrayMaxSize(5, { message:"An anime can just have 5 tags" })
   tags:string[];

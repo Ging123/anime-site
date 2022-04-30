@@ -5,6 +5,13 @@
   justify-content:$justify-content;
 }
 
+%align-x-and-y {
+  left:50%;
+  position:absolute;
+  top:50%;
+  transform:translate(-50%, -50%);
+}
+
 %flex-row {
   display:flex;
   flex-direction:row;

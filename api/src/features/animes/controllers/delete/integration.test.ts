@@ -9,6 +9,7 @@ const userData = {
   adminKey:process.env.ADMIN_KEY,
   emailOrUsername:"asfasvsjnfgbdf bdfbd"
 }
+const tagName = "test"
 var animeName = "hunterhunterrr";
 var token:string;
 var app: any;
@@ -20,9 +21,15 @@ beforeAll(async () => {
   await request(app).post("/users").send(userData);
   const res = await request(app).post("/users/login").send(userData);
   token = res.body.access_token;
+
+  await request(app)
+    .post("/tags")
+    .send({ name:tagName })
+    .set("authorization", token);
 });
 
 afterAll(async () => {
+  await request(app).delete(`/tags/${tagName}`).set("authorization", token);
   await request(app).delete("/users").set("authorization", token);
   await server.close();
 });
@@ -33,6 +40,7 @@ test("Delete an anime", async () => {
     .set("authorization", token)
     .field("name", animeName)
     .field("description", "kkkkk")
+    .field("tags[0]", tagName)
     .attach("file", "src/assets_for_tests/1_BytAjqXDOjUZl7MEs1WHUw.png");
   const res = await request(app)
     .delete(`/animes/${animeName}`)

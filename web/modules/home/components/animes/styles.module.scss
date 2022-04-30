@@ -1,0 +1,119 @@
+@import "../../../../styles/screen.size.scss";
+@import "../../../../styles/container.scss";
+@import "../../../../styles/effect.scss";
+@import "../../../../styles/color.scss";
+@import "../../../../styles/text.scss";
+
+.container {
+  display:grid;
+  grid-template-columns:100%;
+  grid-auto-rows:400px;
+  gap:40px 0px;
+  justify-content:center;
+  margin-top:40px;
+  width:100%;
+}
+
+.anime {
+  border:3px solid $main-green;
+  border-radius:10px;
+  overflow:hidden;
+  position:relative;
+
+  .bar {
+    background:#000000ea;
+    bottom:0px;
+    overflow:hidden;
+    padding:10px;
+    position:absolute;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+    width:100%;
+  }
+
+  .name {
+    font-size:16px;
+  }
+
+  .image {
+    @extend %noselect;
+    @extend %darker-on-click-or-hover;
+    height:100%;
+    width:100%;
+  }
+
+  .layer {
+    background:#00000065;
+    height:100%;
+    pointer-events:none;
+    position:absolute;
+    top:0px;
+    width:100%;
+    white-space:nowrap;
+    word-wrap:break-word;
+  }
+
+  .plus {
+    @extend %darker-on-click-or-hover;
+    display:block;
+    font-size:24px;
+    position:absolute;
+    right:15px;
+    top:15px;
+  }
+
+  .play {
+    @extend %align-x-and-y;
+    display:none;
+    font-size:60px;
+    pointer-events:none;
+  }
+
+  &:hover .play {
+    display:block;
+  }
+}
+
+@media (min-width:$smallest-devices-width) {
+ .anime .bar .name {
+   font-size:18px;
+ }
+}
+
+@media (min-width:$small-devices-width) {
+  .container {
+    gap:40px 20px;
+    grid-template-columns:50% 50%;
+  }
+
+  .anime .bar .name {
+    font-size:20px;
+  }
+}
+
+@media (min-width:$medium-devices-width) {
+  .container {
+    grid-template-columns:33% 33% 33%;
+  }
+}
+
+@media (min-width:$big-devices-width) {
+  .container {
+    grid-template-columns:24% 24% 24% 24%;
+  }
+
+  .anime {
+    
+    &:hover {
+      box-shadow:0 0 10px $main-green, 0 0 30px $main-green, 0 0 50px $main-green;
+    }
+
+    .plus {
+      display:none;
+    }
+
+    &:hover .plus {
+      display:block;
+    }
+  }
+}

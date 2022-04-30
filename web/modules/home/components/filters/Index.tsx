@@ -1,15 +1,24 @@
 import { BsSortAlphaDown, BsSortAlphaUpAlt } from "react-icons/bs";
-import { FaThList } from "react-icons/fa"; 
+import { Dispatch, SetStateAction, useState } from "react";
+import { FaThList } from "react-icons/fa";
 import styles from "./styles.module.scss";
-import { useState } from "react";
 
+type setter = Dispatch<SetStateAction<boolean>>;
 
-const Filters = () => {
+interface props {
+  setGenreVisibility:setter;
+}
+
+const Filters = (props:props) => {
   const [ sortByAlpha, setSortByAlpha ] = useState(true);
 
   return (
     <div className={ styles.container }>
-      <FaThList className={ styles.icone } title="Genres"/>
+      <FaThList 
+        className={ styles.icone } 
+        onClick={() => manipulateGenreVisibility(props.setGenreVisibility) }
+        title="Genres"
+      />
       { sortByAlpha ? 
       (
         <BsSortAlphaDown 
@@ -28,7 +37,14 @@ const Filters = () => {
       ) 
       }
     </div>
-  )
+  );
+}
+
+function manipulateGenreVisibility(genreIsVisible:setter) {
+  genreIsVisible((visible) => {
+    if(visible) return false;
+    return true;
+  });
 }
 
 export default Filters;
