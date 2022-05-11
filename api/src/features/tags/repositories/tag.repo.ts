@@ -25,6 +25,10 @@ class TagRepo implements TagRepoInterface {
     return await this.tag.find({ where:query });
   }
 
+  public async findAll() {
+    return await this.tag.find();
+  }
+
   private createArrayWithNameObject(name:string[]) {
     const _array = [];
     for(const tag of name) {

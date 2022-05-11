@@ -7,6 +7,6 @@ export const throttlerProvider = {
 };
 
 export default ThrottlerModule.forRoot({
-  ttl: 60,
-  limit: 20,
+  //ttl: 60,
+  //limit: 20,
 });

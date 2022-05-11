@@ -26,10 +26,39 @@ class AnimeRepo implements AnimeRepository {
     );
   }
 
+  public async find(page=1, asc=true) {
+    const limit = 16;
+    const offset = (page - 1) * limit;
+    const order = asc ? "ASC" : "DESC";
+
+    const animes = await this.anime.findAndCount({
+      order:{ name:order },
+      skip:offset,
+      take:limit,
+      select:[ "name", "image", "description" ]
+    });
+    return animes[0];
+  }
+
+  public async findByTagId(page=1, asc=true, tagId:string):Promise<Anime[]> {
+    const limit = 16;
+    const offset = (page - 1) * limit;
+    const order = asc ? "ASC" : "DESC";
+
+    return await this.anime.query(`
+      SELECT "name", "description", "image"
+      FROM "animes_tags"
+      JOIN "anime"
+      ON "animeId" = "id" 
+      AND "tagId" = '${tagId}' 
+      ORDER BY "name" ${order}
+      LIMIT ${limit}
+      OFFSET ${offset}
+    `);
+  }
+
   public async deleteByName(name:string) {
-    return await this.anime.delete(
-      { name:name }
-    );
+    return await this.anime.delete({ name:name });
   }
 }
 

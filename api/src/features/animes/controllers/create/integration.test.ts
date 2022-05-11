@@ -2,43 +2,32 @@ import createTestApi from "../../../../utils/create.test.api";
 import { INestApplication } from "@nestjs/common";
 import * as request from "supertest";
 
-const userData = {
-  email:"kaccccsao@gmail.com",
-  username:"safgawqewq",
-  password:"asfvavava",
-  adminKey:process.env.ADMIN_KEY,
-  emailOrUsername:"safgawqewq"
-}
+const testCode = process.env.TEST_CODE;
 const tagName = "action";
 var animeName = "narutoo";
-var token:string;
 var app: any;
 var server: INestApplication;
 
 beforeAll(async () => {
   server = await createTestApi();
   app = server.getHttpServer();
-  await request(app).post("/users").send(userData);
-  const res = await request(app).post("/users/login").send(userData);
-  token = res.body.access_token;
 
   await request(app)
     .post("/tags")
     .send({ name:tagName })
-    .set("authorization", token);
+    .set("test", testCode);
 });
 
 afterAll(async () => {
-  await request(app).delete(`/animes/${animeName}`).set("authorization", token);
-  await request(app).delete("/users").set("authorization", token);
-  await request(app).delete(`/tags/${tagName}`).set("authorization", token);
+  await request(app).delete(`/animes/${animeName}`).set("test", testCode);
+  await request(app).delete(`/tags/${tagName}`).set("test", testCode);
   await server.close();
 });
 
 test("Create an anime", async () => {
   const res = await request(app)
     .post("/animes")
-    .set("authorization", token)
+    .set("test", testCode)
     .field("name", animeName)
     .field("description", "")
     .field("tags[0]", tagName)
@@ -50,7 +39,7 @@ test("Test error of send a name that already exists", async () => {
   const nameAlreadyExist = "This anime already exists";
   const res = await request(app)
     .post("/animes")
-    .set("authorization", token)
+    .set("test", testCode)
     .field("name", animeName)
     .field("description", "")
     .field("tags[0]", tagName)
@@ -63,7 +52,7 @@ test("Test don't send name", async () => {
   const nameIsEmpty = "Name is empty";
   const res = await request(app)
     .post("/animes")
-    .set("authorization", token)
+    .set("test", testCode)
     .send({ name:"", description:""});
   expect(res.status).toBe(400);
   expect(res.body.message).toContain(nameIsEmpty);
@@ -75,7 +64,7 @@ describe("Test tag errors", () => {
     const tagsIsEmpty = "Tags is empty";
     const res = await request(app)
       .post("/animes")
-      .set("authorization", token)
+      .set("test", testCode)
       .send({ name:"a", description:""});
     expect(res.status).toBe(400);
     expect(res.body.message).toContain(tagsIsEmpty)
@@ -86,7 +75,7 @@ describe("Test tag errors", () => {
     const quantityOfTagsGreaterThanAllowed = "An anime can just have 5 tags";
     const res = await request(app)
       .post("/animes")
-      .set("authorization", token)
+      .set("test", testCode)
       .send({ name:"a", description:"", tags:tags});
     expect(res.status).toBe(400);
     expect(res.body.message).toContain(quantityOfTagsGreaterThanAllowed)
@@ -99,7 +88,7 @@ describe("Test image errors", () => {
     const imageWasntSent = "Image wasn't sent";
     const res = await request(app)
       .post("/animes")
-      .set("authorization", token)
+      .set("test", testCode)
       .send({ name:"narutoo", description:"a ninja anime", tags:[ tagName ]})
     expect(res.status).toBe(400);
     expect(res.body.message).toContain(imageWasntSent);
@@ -109,7 +98,7 @@ describe("Test image errors", () => {
     const invalidImage = "Image invalid";
     const res = await request(app)
       .post("/animes")
-      .set("authorization", token)
+      .set("test", testCode)
       .field("name", "kkkkk")
       .field("description", "asokdasodkaso")
       .attach("file", "src/assets_for_tests/test.txt")
@@ -128,7 +117,7 @@ describe("Test errors of length", () => {
   test("Send data with length greater than allowed", async () => {
     const res = await request(app)
       .post("/animes")
-      .set("authorization", token)
+      .set("test", testCode)
       .send({
         name:"askdkasokdoskaokdosakdoksaokdosakdoksaokdosakodksaokfopaskfpkaspfpoaskpfokaspfpoakspofkpoaskfpokaspokfpoakspofkaposkfopsakfopkaspofkoapkfa",
         description:"saijfiasjfisajfksaofkoaskfoksaofkoskaofkokoaskfokokofkaoksofdksdsknvknsdkvdsvkjdskjfkjdskfjdsf9d sf9d jf9dj s9fjd9s jf9a9sfjsa 9 fs9af01f jasfklashfashf sajfh safhsjafh jsah fjsah jfhs ajhfjsa hfjhsa jfhsaj hfjsah fjhasfjasfasljdsalkdjsakldj askluwqoie wqi oewqueio wqu 8wqe8 u28ue 82eu 8u ue82u ew e,w aejwia jewa  wka 9dwa d9102dj i12 di do1d io21m doi21md sau dsa98fsa-0fsafs,afnsafsacsaca"

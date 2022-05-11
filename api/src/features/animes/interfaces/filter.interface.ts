@@ -1,4 +1,5 @@
 export interface filter {
-  
-  page:number;
+  asc?:boolean;
+  tagId?:string;
+  page?:number;
 }

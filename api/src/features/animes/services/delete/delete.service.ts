@@ -1,7 +1,10 @@
 import CreateCacheQueue from "../../../cache/jobs/create_cache/queue";
 import CacheManager from "../../../../libs/cache/cache.manager";
+
 import DeleteAnimeQueue from "../../jobs/delete_anime/queue";
 import { HttpException, Injectable } from "@nestjs/common";
+
+import { join } from "path";
 import Base from "../base";
 
 @Injectable()
@@ -16,34 +19,36 @@ class DeleteAnimeService extends Base {
   public async delete(name:string) {
     const anime = await this.getAnime(name);
     this.deleteImage(anime.image);
-    await this.deleteFromCache(name);
     await this.deleteAnimeFromDatabase(anime.name);
   }
+
 
   private async getAnime(name:string) {
     const animeDoesntExist = "This anime doesn't exists";
     const anime = await this.anime.findByName(name, ["name", "image"]);
+
     if(!anime) throw new HttpException(animeDoesntExist, 400);
     return anime;
   }
 
-  private deleteImage(path:string) {
+
+  private deleteImage(imageUrl:string) {
+    const path = this.getImagePath(imageUrl);
     this.shell.deleteAnimeImage(path);
   }
 
-  private async deleteFromCache(name:string) {
-    const isInDevMode = process.env.STATUS === "DEV";
-    if(isInDevMode) return await this.deleteAnimeFromCache(name);
-    this.deleteAnimeFromCache(name);
+  
+  private getImagePath(imageUrl:string) {
+    const urlArray = imageUrl.split('/');
+    const lastIndex = urlArray.length - 1;
+
+    const imageName = urlArray[lastIndex]
+    const path = `/src/public/anime_images/${imageName}`;
+
+    const fullPath = join(process.cwd(), path);
+    return fullPath;
   }
 
-  private async deleteAnimeFromCache(name:string) {
-    const isInDevMode = process.env.STATUS === "DEV";
-    let animesInCache = await this.animeInCache.get("animes");
-    animesInCache = animesInCache.filter((anime) => anime.name !== name);
-    if(isInDevMode) return await this.animeInCache.create("animes", animesInCache);
-    this.newCache.createCache("animes", animesInCache);
-  }
 
   private async deleteAnimeFromDatabase(name:string) {
     const isInDevMode = process.env.STATUS === "DEV";

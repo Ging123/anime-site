@@ -3,8 +3,8 @@ import { INestApplication } from "@nestjs/common";
 import * as request from "supertest";
 
 const testCode = process.env.TEST_CODE;
-const tagName = "ccc"
-const animeName = "blleach";
+const tagName = "xs"
+const animeName = "ffff";
 var app: any;
 var server: INestApplication;
 
@@ -32,18 +32,24 @@ afterAll(async () => {
   await server.close();
 });
 
-test("Get an anime", async () => {
-  const res = await request(app).get(`/animes/${animeName}`);
-  const animeData = res.body;
-  expect(animeData.name).toBeDefined();
-  expect(animeData.image).toBeDefined();
-  expect(animeData.description).toBeDefined();
+test("Get a image", async () => {
+  const imageName = await getImageName();
+  const res = await request(app).get(`/animes/image/${imageName}`);
   expect(res.status).toBe(200);
 });
 
-test("Send invalid name", async () => {
-  const animeDoesntExists = "This anime doesn't exist";
-  const res = await request(app).get("/animes/askdosakodksaodskapodsapofksapofkpofkafkpaokaopfpoakfpoakfpoakfpafpafpapfkapfapfajfpajfpoajfpoakfpoafpapfajjjasdasjodpasdaspodkaspodkaspdkaspoaspofsapoposafpoasfpoasfaskpfafogopsdjgojsdpogjsdpogpdsgposgpsdkgpsdkpogksdpogspogkspokgposkgpoweopkgwepogowegewjgoewjgpowejpogwepgjwkgjggjgbbbbnbnbnbnbnbnngjgjgjnvnccxzxzcizjijasfjkhhllljojphph");
-  expect(res.body.message).toContain(animeDoesntExists);
-  expect(res.status).toBe(400);
+test("Try to get image that doesn't exists", async () => {
+  const res = await request(app).get(`/animes/image/a`);
+  expect(res.status).toBe(404);
 });
+
+async function getImageName() {
+  const anime = await request(app).get(`/animes/${animeName}`);
+  const imageUrl = anime.body.image;
+
+  const urlArray = imageUrl.split('/');
+  const lastIndex = urlArray.length - 1;
+
+  const imageName = urlArray[lastIndex]
+  return imageName;
+}

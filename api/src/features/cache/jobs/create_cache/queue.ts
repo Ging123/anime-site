@@ -8,8 +8,9 @@ class CreateCacheQueue {
     @InjectQueue("create-cache-queue") private queue: Queue
   ) {}
 
-  public async createCache(key:string, data:any) {
-    await this.queue.add("create-cache-job", { key:key, data:data });
+  public async createCache(key:string, value:any, timeInSeconds?:number) {
+    const data = { key:key, data:value, timeInSeconds:timeInSeconds };
+    await this.queue.add("create-cache-job", data);
   }
 }
 

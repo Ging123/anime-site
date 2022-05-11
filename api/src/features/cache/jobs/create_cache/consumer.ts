@@ -6,6 +6,7 @@ import { Job } from "bull";
 interface data {
   key:string;
   data:any;
+  timeInSeconds?:number;
 }
 
 @Processor("create-cache-queue")
@@ -23,8 +24,8 @@ class CreateCacheConsumer {
 
   @Process("create-cache-job")
   async createCache(job: Job<data>) {
-    const { key, data } = job.data;
-    await this.cache.create(key, data);
+    const { key, data, timeInSeconds } = job.data;
+    await this.cache.create(key, data, timeInSeconds);
   }
 }
 

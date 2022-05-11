@@ -21,10 +21,23 @@ export class UserHasValidRole implements CanActivate {
     const request = context.switchToHttp().getRequest();
 
     const accessToken = request.headers.authorization;
+    const test = request.headers.test;
+
+    const isNotInProduction = this.verifyIfIsInTestMode(test);
+    if(isNotInProduction) return true;
+
     const user = this.convertToken(accessToken);
     this.validateUserRole(user.role, validRole);
 
     return true;
+  }
+
+  private verifyIfIsInTestMode(testKey:string) {
+    const isInDevMode = process.env.STATUS === "DEV";
+    const testKeyIsValid = process.env.TEST_CODE === testKey;
+    
+    if(testKeyIsValid && isInDevMode) return true;
+    return false;
   }
 
   private convertToken(accessToken:string) {

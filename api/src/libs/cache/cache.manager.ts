@@ -2,7 +2,7 @@ import { CACHE_MANAGER, Inject, Injectable } from "@nestjs/common";
 import CacheInterface from "./cache.interface";
 import { Cache } from "cache-manager";
 
-const oneHour = 3600;
+const fiveMinutes = 300; //SECONDS
 
 @Injectable()
 class CacheManager implements CacheInterface {
@@ -12,7 +12,7 @@ class CacheManager implements CacheInterface {
     private readonly cache:Cache
   ) {}
 
-  public async create(key:string, value:any, timeInSeconds = oneHour) {
+  public async create(key:string, value:any, timeInSeconds=fiveMinutes) {
     return await this.cache.set(key, value, {ttl:timeInSeconds});
   }
 
