@@ -1,5 +1,5 @@
 import { Body, Controller, Get, Res, ValidationPipe } from "@nestjs/common";
-import GetAnimeService from "../../services/get/get.service";
+import GetAnimeService from "../../services/get_many/get.many.service";
 import GetManyDto from "./get.many.dto";
 import { Response } from "express";
 import { join } from "path";

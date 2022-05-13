@@ -33,17 +33,33 @@ afterAll(async () => {
 });
 
 test("Get an anime", async () => {
-  const res = await request(app).get(`/animes/${animeName}`);
-  const animeData = res.body;
-  expect(animeData.name).toBeDefined();
-  expect(animeData.image).toBeDefined();
-  expect(animeData.description).toBeDefined();
+  let res = await request(app).get(`/animes/${animeName}`);
+  const animeGotFromDb = res.body;
+  
+  expect(animeGotFromDb.name).toBeTruthy();
+  expect(res.status).toBe(200);
+
+  res = await request(app).get(`/animes/${animeName}`);
+  const animeGotFromCache = res.body;
+  
+  expect(animeGotFromCache.name).toBeTruthy();
   expect(res.status).toBe(200);
 });
+
 
 test("Send invalid name", async () => {
   const animeDoesntExists = "This anime doesn't exist";
   const res = await request(app).get("/animes/askdosakodksaodskapodsapofksapofkpofkafkpaokaopfpoakfpoakfpoakfpafpafpapfkapfapfajfpajfpoajfpoakfpoafpapfajjjasdasjodpasdaspodkaspodkaspdkaspoaspofsapoposafpoasfpoasfaskpfafogopsdjgojsdpogjsdpogpdsgposgpsdkgpsdkpogksdpogspogkspokgposkgpoweopkgwepogowegewjgoewjgpowejpogwepgjwkgjggjgbbbbnbnbnbnbnbnngjgjgjnvnccxzxzcizjijasfjkhhllljojphph");
+  
   expect(res.body.message).toContain(animeDoesntExists);
   expect(res.status).toBe(400);
+});
+
+
+test("Send an anime that doesn't exists", async () => {
+  const res = await request(app).get("/animes/a");
+  const animeFound = res.body;
+
+  expect(animeFound.name).toBeUndefined();
+  expect(res.status).toBe(200);
 });
